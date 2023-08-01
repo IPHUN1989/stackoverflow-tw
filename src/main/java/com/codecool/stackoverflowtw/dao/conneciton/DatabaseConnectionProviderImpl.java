@@ -15,7 +15,6 @@ public class DatabaseConnectionProviderImpl implements DatabaseConnectionProvide
 
     @Override
     public Connection getConnection(String url, String user, String password) {
-        Connection conn = null;
         try {
             Properties props = new Properties();
             props.setProperty("user", USER_NAME);
