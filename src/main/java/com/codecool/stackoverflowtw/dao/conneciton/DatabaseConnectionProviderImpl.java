@@ -2,7 +2,6 @@ package com.codecool.stackoverflowtw.dao.conneciton;
 
 import java.sql.Connection;
 import java.sql.*;
-import java.util.Properties;
 
 public class DatabaseConnectionProviderImpl implements DatabaseConnectionProvider {
 
@@ -14,13 +13,9 @@ public class DatabaseConnectionProviderImpl implements DatabaseConnectionProvide
     public static final String PASSWORD = System.getenv("APP_DB_PASSWORD");
 
     @Override
-    public Connection getConnection(String url, String user, String password) {
+    public Connection getConnection() {
         try {
-            Properties props = new Properties();
-            props.setProperty("user", USER_NAME);
-            props.setProperty("password", PASSWORD);
-
-            return DriverManager.getConnection(URL, props);
+            return DriverManager.getConnection(URL, USER_NAME, PASSWORD);
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
