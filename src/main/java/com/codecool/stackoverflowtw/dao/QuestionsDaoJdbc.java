@@ -62,37 +62,47 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
     }
 
     public boolean deleteQuestionById(int id) {
-        String sql = "DELETE * FROM question WHERE id = ?";
+        String sql = "DELETE FROM question WHERE id = ?";
+
+        boolean successfull = false;
 
         try (Connection conn = databaseConnectionProvider.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
-            pstmt.executeUpdate();
-
+            if (pstmt.executeUpdate() == 1) {
+                successfull = true;
+            }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
-        return false;
+        return successfull;
     }
 
     public int addNewQuestion(Question newQuestion) {
         int user_id = newQuestion.userId();
         String title = newQuestion.title();
         String description = newQuestion.description();
+        Timestamp timestamp = Timestamp.valueOf(newQuestion.created());
 
-        String sql = "INSERT INTO (user_id, title, description) question  VALUES(?, ?, ?)";
+        String sql = "INSERT INTO question (user_id, title, description, created)  VALUES(?, ?, ?, ?)";
+        int createdId = 0;
+
 
         try (Connection conn = databaseConnectionProvider.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setInt(1, user_id);
             pstmt.setString(2, title);
             pstmt.setString(3, description);
+            pstmt.setTimestamp(4, timestamp);
             pstmt.executeUpdate();
+            ResultSet rs = pstmt.getGeneratedKeys();
+            if(rs.next()) {
+                createdId = rs.getInt(1);
+            }
 
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
-        int createdId = 0;
         return createdId;
     }
 }
