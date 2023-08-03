@@ -1,72 +1,77 @@
 package com.codecool.stackoverflowtw.dao;
 
 import com.codecool.stackoverflowtw.dao.conneciton.DatabaseConnectionProvider;
-import com.codecool.stackoverflowtw.dao.model.Question;
+import com.codecool.stackoverflowtw.dao.model.Answer;
 
-import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.*;
 
-public class QuestionsDaoJdbc implements QuestionsDAO {
+public class AnswersDaoJdbc implements AnswersDAO{
 
     private final DatabaseConnectionProvider databaseConnectionProvider;
 
-
-    public QuestionsDaoJdbc(DatabaseConnectionProvider databaseConnectionProvider) {
+    public AnswersDaoJdbc(DatabaseConnectionProvider databaseConnectionProvider) {
         this.databaseConnectionProvider = databaseConnectionProvider;
     }
 
-    public List<Question> getAllQuestions() {
-        String sql = "SELECT * FROM question";
-        List<Question> questionsList = new ArrayList<>();
+    @Override
+    public List<Answer> getAllAnswersByQuestionId(int searchedQuestionId) {
+        String sql = "SELECT * FROM answers WHERE question_id = ?";
+        List<Answer> answers = new ArrayList<>();
 
         try (Connection conn = databaseConnectionProvider.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                 pstmt.setInt(1, searchedQuestionId);
+                ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
                 int id = rs.getInt("id");
+                int question_id = rs.getInt("question_id");
                 int user_id = rs.getInt("user_id");
-                String title = rs.getString("title");
                 String description = rs.getString("description");
                 LocalDateTime created = rs.getTimestamp("created").toLocalDateTime();
-                questionsList.add(new Question(id, user_id, title, description, created));
+                boolean accepted = rs.getBoolean("accepted");
+                answers.add(new Answer(id, question_id, user_id, description, created, accepted));
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
-        return questionsList;
+        return answers;
     }
 
-    public Question getQuestionById(int id) {
-        String sql = "SELECT * FROM question WHERE id = ?";
+    @Override
+    public Answer getAnswerById(int id) {
+        String sql = "SELECT * FROM answers WHERE id = ?";
 
-        
-        Question foundQuestion = null;
+
+        Answer foundAnswer = null;
 
         try (Connection conn = databaseConnectionProvider.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             ResultSet rs = pstmt.executeQuery();
             rs.next();
-
-            int questionId = rs.getInt("id");
+            int answer_id = rs.getInt("id");
+            int questionId = rs.getInt("question_id");
             int user_id = rs.getInt("user_id");
-            String title = rs.getString("title");
             String description = rs.getString("description");
             LocalDateTime created = rs.getTimestamp("created").toLocalDateTime();
-            foundQuestion = new Question(questionId, user_id, title, description, created);
+            boolean accepted = rs.getBoolean("accepted");
+            foundAnswer = new Answer(answer_id, questionId, user_id, description, created, accepted);
 
 
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
-        return foundQuestion;
+        return foundAnswer;
     }
 
-    public boolean deleteQuestionById(int id) {
-        String sql = "DELETE FROM question WHERE id = ?";
+    @Override
+    public boolean deleteAnswerById(int id) {
+
+        String sql = "DELETE FROM answers WHERE id = ?";
 
         boolean successfull = false;
 
@@ -82,22 +87,26 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
         return successfull;
     }
 
-    public int addNewQuestion(Question newQuestion) {
-        int user_id = newQuestion.userId();
-        String title = newQuestion.title();
-        String description = newQuestion.description();
-        Timestamp timestamp = Timestamp.valueOf(newQuestion.created());
+    @Override
+    public int addNewAnswer(Answer newAnswer) {
 
-        String sql = "INSERT INTO question (user_id, title, description, created)  VALUES(?, ?, ?, ?)";
+        int question_id = newAnswer.questionId();
+        int user_id = newAnswer.userId();
+        String description = newAnswer.description();
+        Timestamp timestamp = Timestamp.valueOf(newAnswer.created());
+        boolean accepted = newAnswer.accepted();
+
+        String sql = "INSERT INTO answers (question_id, user_id, description, created, accepted)  VALUES(?, ?, ?, ?, ?)";
         int createdId = 0;
 
 
         try (Connection conn = databaseConnectionProvider.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            pstmt.setInt(1, user_id);
-            pstmt.setString(2, title);
+            pstmt.setInt(1, question_id);
+            pstmt.setInt(2, user_id);
             pstmt.setString(3, description);
             pstmt.setTimestamp(4, timestamp);
+            pstmt.setBoolean(5, accepted);
             pstmt.executeUpdate();
             ResultSet rs = pstmt.getGeneratedKeys();
             if(rs.next()) {
