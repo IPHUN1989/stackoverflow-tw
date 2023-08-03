@@ -22,7 +22,7 @@ function App() {
             <div className="App">
                 <Header/>
                 <div className={"content"}>
-                    <Question title={"asd"} description={"asdasd"} answers={[1,2,3,4]} timePosted={"2023-08-03T10:30:00-01:00"}/>
+                    {questions.map((question,i) => <Question key={i} title={question.title} description={question.description} timePosted={question.created} answers={question.answers}/>)}
                 </div>
             </div>
         );

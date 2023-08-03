@@ -2,18 +2,10 @@ import "./Question.css";
 import {useEffect, useState} from "react";
 import Answer from "../answer/Answer";
 
-function Question({title, description, answerIds, timePosted}) {
+function Question({title, description, answers, timePosted}) {
     const postingDate = new Date(timePosted);
-    const [answers, setAnswers] = useState(null);
     const [showAnswers, setShowAnswers] = useState(false);
 
-    const fetchAnswers = async (answerIds) =>{
-
-    }
-
-    useEffect(() => {
-        fetchAnswers(answerIds);
-    }, [answerIds]);
 
     if(answers){
         return (
@@ -31,7 +23,7 @@ function Question({title, description, answerIds, timePosted}) {
                 </div>
                 {showAnswers && (
                     <div className={"answers"}>
-                        {answers.map((answer, i) => <Answer key={i} username={answer.username} answerDescription={answer.answerDescription} timeAnswered={answer.timeAnswered}/>)}
+                        {answers.map((answer, i) => <Answer key={i} username={answer.username} answerDescription={answer.description} timeAnswered={answer.created}/>)}
                     </div>
                 )}
             </div>
