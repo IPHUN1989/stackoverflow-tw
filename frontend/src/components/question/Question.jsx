@@ -8,10 +8,7 @@ function Question({title, description, answerIds, timePosted}) {
     const [showAnswers, setShowAnswers] = useState(false);
 
     const fetchAnswers = async (answerIds) =>{
-        setAnswers([
-            {username: "asd", answerDescription: "hogy kell azt hogy o izeXDD", timeAnswered: new Date("2023-08-03T10:30:00-01:00")},
-            {username: "péter", answerDescription: "kerdes.com", timeAnswered: new Date("2023-08-03T10:30:00-01:00")}
-        ])
+
     }
 
     useEffect(() => {
