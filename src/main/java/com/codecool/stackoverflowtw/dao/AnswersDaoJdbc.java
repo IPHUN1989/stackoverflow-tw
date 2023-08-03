@@ -70,7 +70,21 @@ public class AnswersDaoJdbc implements AnswersDAO{
 
     @Override
     public boolean deleteAnswerById(int id) {
-        return false;
+
+        String sql = "DELETE FROM answers WHERE id = ?";
+
+        boolean successfull = false;
+
+        try (Connection conn = databaseConnectionProvider.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            if (pstmt.executeUpdate() == 1) {
+                successfull = true;
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return successfull;
     }
 
     @Override
