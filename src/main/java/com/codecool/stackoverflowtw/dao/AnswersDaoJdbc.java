@@ -88,7 +88,34 @@ public class AnswersDaoJdbc implements AnswersDAO{
     }
 
     @Override
-    public int addNewAnswer(Answer newQuestion) {
-        return 0;
+    public int addNewAnswer(Answer newAnswer) {
+
+        int question_id = newAnswer.questionId();
+        int user_id = newAnswer.userId();
+        String description = newAnswer.description();
+        Timestamp timestamp = Timestamp.valueOf(newAnswer.created());
+        boolean accepted = newAnswer.accepted();
+
+        String sql = "INSERT INTO answers (question_id, user_id, description, created, accepted)  VALUES(?, ?, ?, ?, ?)";
+        int createdId = 0;
+
+
+        try (Connection conn = databaseConnectionProvider.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            pstmt.setInt(1, question_id);
+            pstmt.setInt(2, user_id);
+            pstmt.setString(3, description);
+            pstmt.setTimestamp(4, timestamp);
+            pstmt.setBoolean(5, accepted);
+            pstmt.executeUpdate();
+            ResultSet rs = pstmt.getGeneratedKeys();
+            if(rs.next()) {
+                createdId = rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return createdId;
     }
 }
