@@ -1,7 +1,8 @@
-package com.codecool.stackoverflowtw.dao.model;
+package com.codecool.stackoverflowtw.dao;
 
 import com.codecool.stackoverflowtw.dao.UserDAO;
 import com.codecool.stackoverflowtw.dao.conneciton.DatabaseConnectionProvider;
+import com.codecool.stackoverflowtw.dao.model.User;
 
 import java.sql.*;
 import java.time.LocalDateTime;
