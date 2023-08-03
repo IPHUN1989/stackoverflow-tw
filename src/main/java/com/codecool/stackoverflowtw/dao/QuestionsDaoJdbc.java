@@ -10,11 +10,12 @@ import java.util.List;
 
 public class QuestionsDaoJdbc implements QuestionsDAO {
 
+    private final DatabaseConnectionProvider databaseConnectionProvider;
+
+
     public QuestionsDaoJdbc(DatabaseConnectionProvider databaseConnectionProvider) {
         this.databaseConnectionProvider = databaseConnectionProvider;
     }
-
-    private final DatabaseConnectionProvider databaseConnectionProvider;
 
     public List<Question> getAllQuestions() {
         String sql = "SELECT * FROM question";
@@ -40,12 +41,15 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
 
     public Question getQuestionById(int id) {
         String sql = "SELECT * FROM question WHERE id = ?";
+
         
         Question foundQuestion = null;
 
         try (Connection conn = databaseConnectionProvider.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            rs.next();
 
             int questionId = rs.getInt("id");
             int user_id = rs.getInt("user_id");
