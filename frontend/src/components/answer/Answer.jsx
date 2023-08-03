@@ -1,10 +1,12 @@
-function Answer({username, answerDescription, timeAnswered}){
+import "./Answer.css";
+
+function Answer({answerDescription, timeAnswered}){
+    const answeredDate = new Date(timeAnswered);
 
     return (
         <div className={"answerContainer"}>
             <div className={"answerHeader"}>
-                <p className={"answerUsername"}>Answer by: {username}</p>
-                <p className={"answerDate"}>{timeAnswered.getFullYear() + " " + timeAnswered.getMonth() + " " + timeAnswered.getDate() + ", " + timeAnswered.getHours() + ":" + timeAnswered.getMinutes()}</p>
+                <p className={"answerDate"}>{answeredDate.getFullYear() + " " + answeredDate.getMonth() + " " + answeredDate.getDate() + ", " + answeredDate.getHours() + ":" + answeredDate.getMinutes()}</p>
             </div>
             <div className={"answerBody"}>
                 <p className={answerDescription}>{answerDescription}</p>

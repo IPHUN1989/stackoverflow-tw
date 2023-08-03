@@ -1,9 +1,11 @@
 package com.codecool.stackoverflowtw.service;
 
+import com.codecool.stackoverflowtw.controller.dto.NewAnswerDTO;
 import com.codecool.stackoverflowtw.dao.AnswersDAO;
 import com.codecool.stackoverflowtw.dao.QuestionsDAO;
 import com.codecool.stackoverflowtw.controller.dto.NewQuestionDTO;
 import com.codecool.stackoverflowtw.controller.dto.QuestionDTO;
+import com.codecool.stackoverflowtw.dao.model.Answer;
 import com.codecool.stackoverflowtw.dao.model.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,10 @@ public class QuestionService {
     public int addNewQuestion(NewQuestionDTO question) {
         return questionsDAO.addNewQuestion(new Question(-1, question.userId(),
                 question.title(), question.description(), LocalDateTime.now()));
+    }
+    public int addNewAnswer(NewAnswerDTO answer) {
+        return answersDAO.addNewAnswer(new Answer(-1, answer.question_id(), answer.user_id(), answer.description(),
+        LocalDateTime.now(), answer.accepted()));
     }
 
     private QuestionDTO transformDAOToDTO(Question question) {

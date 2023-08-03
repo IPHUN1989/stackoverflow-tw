@@ -1,0 +1,26 @@
+.questionForm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20vh;
+}
+
+.questionFormContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: #ffcc66;
+    height: 30vh;
+    width: 60vw;
+    border-radius: 10px;
+}
+
+.inputField {
+    width: 80%;
+}
+
+.inputField input {
+    width: 100%;
+    height: 25px;
+}

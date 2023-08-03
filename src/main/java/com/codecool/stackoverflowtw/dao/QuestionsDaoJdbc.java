@@ -83,7 +83,7 @@ public class QuestionsDaoJdbc implements QuestionsDAO {
     }
 
     public int addNewQuestion(Question newQuestion) {
-        int user_id = newQuestion.userId();
+        int user_id = 1;
         String title = newQuestion.title();
         String description = newQuestion.description();
         Timestamp timestamp = Timestamp.valueOf(newQuestion.created());

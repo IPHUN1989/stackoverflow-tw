@@ -1,9 +1,12 @@
 import header_logo from "./images/header-logo.png"
 import "./Header.css";
-function Header(){
+function Header({onNewQuestionClick}){
     return (
         <div className={"header"}>
-            <img src={header_logo} alt={""}/>
+            <div className={"headerContainer"}>
+                <img src={header_logo} alt={""}/>
+                <button className={"button"} onClick={onNewQuestionClick}>Submit new question</button>
+            </div>
         </div>
     )
 }

@@ -3,6 +3,7 @@ package com.codecool.stackoverflowtw.dao;
 import com.codecool.stackoverflowtw.dao.conneciton.DatabaseConnectionProvider;
 import com.codecool.stackoverflowtw.dao.model.Answer;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +94,7 @@ public class AnswersDaoJdbc implements AnswersDAO{
         int question_id = newAnswer.questionId();
         int user_id = newAnswer.userId();
         String description = newAnswer.description();
-        Timestamp timestamp = Timestamp.valueOf(newAnswer.created());
+        Timestamp timestamp = Timestamp.from(Instant.now());
         boolean accepted = newAnswer.accepted();
 
         String sql = "INSERT INTO answers (question_id, user_id, description, created, accepted)  VALUES(?, ?, ?, ?, ?)";
@@ -103,7 +104,7 @@ public class AnswersDaoJdbc implements AnswersDAO{
         try (Connection conn = databaseConnectionProvider.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setInt(1, question_id);
-            pstmt.setInt(2, user_id);
+            pstmt.setInt(2, 1);
             pstmt.setString(3, description);
             pstmt.setTimestamp(4, timestamp);
             pstmt.setBoolean(5, accepted);
