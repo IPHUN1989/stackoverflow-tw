@@ -43,7 +43,29 @@ public class AnswersDaoJdbc implements AnswersDAO{
 
     @Override
     public Answer getAnswerById(int id) {
-        return null;
+        String sql = "SELECT * FROM answers WHERE id = ?";
+
+
+        Answer foundAnswer = null;
+
+        try (Connection conn = databaseConnectionProvider.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            rs.next();
+            int answer_id = rs.getInt("id");
+            int questionId = rs.getInt("question_id");
+            int user_id = rs.getInt("user_id");
+            String description = rs.getString("description");
+            LocalDateTime created = rs.getTimestamp("created").toLocalDateTime();
+            boolean accepted = rs.getBoolean("accepted");
+            foundAnswer = new Answer(answer_id, questionId, user_id, description, created, accepted);
+
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return foundAnswer;
     }
 
     @Override
