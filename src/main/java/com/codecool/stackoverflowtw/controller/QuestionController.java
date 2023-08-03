@@ -1,5 +1,6 @@
 package com.codecool.stackoverflowtw.controller;
 
+import com.codecool.stackoverflowtw.controller.dto.NewAnswerDTO;
 import com.codecool.stackoverflowtw.controller.dto.NewQuestionDTO;
 import com.codecool.stackoverflowtw.controller.dto.QuestionDTO;
 import com.codecool.stackoverflowtw.service.QuestionService;
@@ -31,6 +32,11 @@ public class QuestionController {
     @PostMapping("/")
     public int addNewQuestion(@RequestBody NewQuestionDTO question) {
         return questionService.addNewQuestion(question);
+    }
+
+    @PostMapping("/ans")
+    public int addNewAnswer(@RequestBody NewAnswerDTO answer) {
+        return questionService.addNewAnswer(answer);
     }
 
     @DeleteMapping("/{id}")
